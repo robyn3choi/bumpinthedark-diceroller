@@ -10,13 +10,16 @@ const config: Config = {
     colors: {
       white: '#f7f7f7',
       black: '#171515',
-      yellow: '#f2b479',
+      yellow: '#f8b87b',
       orange: '#d55641',
       darkorange: '#b24430',
       brown: '#913827',
       darkbrown: '#6d190e',
     },
     extend: {
+      screens: {
+        xs: '480px',
+      },
       fontFamily: {
         serif: ['var(--font-spectral)'],
         sans: ['var(--font-cryptCreep)'],

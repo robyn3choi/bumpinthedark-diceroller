@@ -42,6 +42,9 @@ export default function Lobby() {
         onSubmit={handleJoin}
         className="h-screen p-4 flex flex-col justify-center items-center text-2xl sm:text-3xl gap-3"
       >
+        <h1 className="text-center text-7xl mb-2 mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
+          Bump in the Dark
+        </h1>
         <input
           placeholder="Enter your name"
           onChange={(e) => setusername(e.target.value)}

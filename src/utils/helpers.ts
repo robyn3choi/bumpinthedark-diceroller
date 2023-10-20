@@ -1,6 +1,15 @@
+import RollResultType from 'enums/RollResultType'
 import { uniqueNamesGenerator, colors, animals, NumberDictionary } from 'unique-names-generator'
 
-export const cyberpunkAdjectives = [
+export function isVowel(c) {
+  return ['a', 'e', 'i', 'o', 'u'].indexOf(c.toLowerCase()) !== -1
+}
+
+export function getRollResultTypePunctuation(rollResultType: RollResultType) {
+  return rollResultType === RollResultType.Miss ? '.' : '!'
+}
+
+const adjectives = [
   'spooky',
   'dark',
   'scary',
@@ -41,7 +50,7 @@ export const cyberpunkAdjectives = [
 export function getRoomName() {
   const numberDictionary = NumberDictionary.generate({ min: 2050, max: 9999 })
   const config = {
-    dictionaries: [colors, cyberpunkAdjectives, animals, numberDictionary],
+    dictionaries: [colors, adjectives, animals, numberDictionary],
     separator: '-',
   }
   return uniqueNamesGenerator(config)
