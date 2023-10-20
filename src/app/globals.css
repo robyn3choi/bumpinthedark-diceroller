@@ -2,21 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html {
+  @apply h-fit min-h-[100vh];
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  @apply relative h-fit pb-24 sm:pb-16 min-h-[100vh] font-serif text-white bg-gradient-to-b from-black via-darkbrown to-darkorange;
+}
+
+.btn-filled {
+  @apply rounded-lg font-sans bg-orange pb-1 pt-2 px-4 text-4xl border-2 border-brown border-t-yellow border-l-yellow hover:brightness-[115%] active:bg-darkorange active:border-orange active:border-t-darkbrown active:border-l-darkbrown disabled:bg-darkorange disabled:border-orange disabled:border-t-darkbrown disabled:border-l-darkbrown disabled:brightness-100;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
 }

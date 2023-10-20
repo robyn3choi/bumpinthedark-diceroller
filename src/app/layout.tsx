@@ -1,8 +1,26 @@
 import './globals.css'
+import { UserProvider } from 'context/UserContext'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Spectral } from 'next/font/google'
+import localFont from 'next/font/local'
 
-const inter = Inter({ subsets: ['latin'] })
+const cryptCreep = localFont({
+  src: [
+    {
+      path: '../fonts/CryptCreep BB_reg.otf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/CryptCreepBB-Heavy.otf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-cryptCreep',
+})
+
+const spectral = Spectral({ weight: ['400', '700'], subsets: ['latin'], display: 'swap', variable: '--font-spectral' })
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -11,8 +29,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${spectral.variable} ${cryptCreep.variable}`}>
+      <body>
+        <UserProvider>{children}</UserProvider>
+      </body>
     </html>
   )
 }
