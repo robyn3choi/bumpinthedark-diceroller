@@ -1,9 +1,7 @@
 'use client'
 
-import clsx from 'clsx'
 import { io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import Lobby from 'components/Lobby'
 import Footer from 'components/Footer'
 import { useUser } from 'context/UserContext'
@@ -15,17 +13,11 @@ import * as copy from 'utils/copy'
 import RollResultType from 'enums/RollResultType'
 import Select from 'components/Select'
 import DiceNumberSelect from 'components/DiceNumberSelect'
-
-const orangeBgClasses = ['bg-orange-1', 'bg-orange-2', 'bg-orange-3', 'bg-orange-4']
-
-const selectStyles = {
-  control: () => ({ backgroundColor: 'red' }),
-}
+import Checkbox from 'components/Checkbox'
 
 const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, { autoConnect: false })
 
 export default function Room({ params }: { params: { room: string } }) {
-  const searchParams = useSearchParams()
   const { username } = useUser()
   const [users, setUsers] = useState<string[]>([])
   const [rollType, setRollType] = useState<RollType>(RollType.Action)
@@ -53,13 +45,13 @@ export default function Room({ params }: { params: { room: string } }) {
         setUsers(updatedUsers)
       })
 
-      socket.on('rolled', ({ rollType, position, hasDisadvantage, dice, username }) => {
-        const resultDie = hasDisadvantage ? Math.min(...dice) : Math.max(...dice)
+      socket.on('rolled', ({ rollType, position, hasDisadvantage, dice, diceCount, username }) => {
+        const resultDie = diceCount === 0 ? Math.min(...dice) : Math.max(...dice)
 
         let rollResultType = RollResultType.Miss
 
         if (resultDie === 6) {
-          if (dice.filter((die) => die === 6).length > 1) {
+          if (diceCount > 0 && dice.filter((die) => die === 6).length > 1) {
             rollResultType = RollResultType.Critical
           } else {
             rollResultType = RollResultType.StrongHit
@@ -81,6 +73,7 @@ export default function Room({ params }: { params: { room: string } }) {
           position,
           hasDisadvantage,
           dice,
+          diceCount,
           username,
           resultDie,
           text,
@@ -106,11 +99,11 @@ export default function Room({ params }: { params: { room: string } }) {
 
   return (
     <>
-      <div className="text-center p-4 sm:p-8">
-        <h1 className="text-7xl mb-2 mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
+      <div className="p-4 sm:p-8">
+        <h1 className="text-center text-7xl mb-2 mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
           Bump in the Dark
         </h1>
-        <div className="mb-10">To invite players to join this room, send them this page’s URL.</div>
+        <div className="text-center mb-10">To invite players to join this room, send them this page’s URL.</div>
         <div className="absolute top-4 text-4xl font-sans">
           {users.map((user) => (
             <div key={user}>{user}</div>
@@ -127,8 +120,8 @@ export default function Room({ params }: { params: { room: string } }) {
             <DiceNumberSelect value={diceCount} onChange={setDiceCount} />
           </div>
           {rollType === RollType.Action && (
-            <div className="mt-4">
-              <div className="font-sans text-3xl text-left">Position</div>
+            <div className="mt-6">
+              <div className="label">Position</div>
               <div className="flex justify-between">
                 {Object.values(Position).map((pos) => (
                   <button key={pos} onClick={() => setPosition(pos)} disabled={pos === position} className="btn-filled">
@@ -136,32 +129,39 @@ export default function Room({ params }: { params: { room: string } }) {
                   </button>
                 ))}
               </div>
-              <div className="mt-6 font-bold text-xl">{copy.position[position]}</div>
+              <div className="mt-6 font-bold text-xl text-center">{copy.position[position]}</div>
             </div>
           )}
-          {/* <button onClick={() => setHasDisadvantage((prevState) => !prevState)}>Disadvantage</button> */}
-          {position === Position.Hopeless ? (
-            <div>{copy.hopeless}</div>
-          ) : (
-            <button onClick={roll} className="btn-filled !border-3 !text-7xl !pt-3 mt-10">
+          {position === Position.Hopeless && <div className="text-lg text-center">{copy.hopeless}</div>}
+          <div className="text-center mt-8">
+            <label className="flex items-center justify-center gap-2.5 mb-3 cursor-pointer w-fit mx-auto">
+              <Checkbox isChecked={hasDisadvantage} onChange={(e) => setHasDisadvantage(e.target.checked)} />
+              <div className="text-4xl font-sans mt-1.5">Disadvantage</div>
+            </label>
+            <button
+              disabled={position === Position.Hopeless}
+              onClick={roll}
+              className="btn-filled-disableable !border-3 !text-7xl !pt-3"
+            >
               ROLL
             </button>
-          )}
-        </div>
-        {rollData && (
-          <div>
-            <div className="text-2xl mt-6 mb-3">
-              {/* <span className="font-sans text-5xl mr-1">{rollData.username} </span>rolled: */}
-              <span className="font-bold">{rollData.username}</span> rolled:
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {rollData?.dice.map((die, i) => (
-                <Die key={i} num={die} isResult={die === rollData.resultDie} />
-              ))}
-            </div>
-            <div className="mt-3 text-2xl">{rollData.text}</div>
+            <hr className="text-orange mt-8" />
+            {rollData && (
+              <div>
+                <div className="text-2xl mt-6 mb-2">
+                  <span className="font-bold">{rollData.username}</span>
+                  {` rolled${rollData.diceCount === 0 ? ' (0 dice)' : ''}: `}
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {rollData?.dice.map((die, i) => (
+                    <Die key={i} num={die} isResult={die === rollData.resultDie} />
+                  ))}
+                </div>
+                <div className="mt-3 text-2xl">{rollData.text}</div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
       <Footer />
     </>

@@ -7,11 +7,27 @@ html {
 }
 
 body {
-  @apply relative h-fit pb-24 sm:pb-16 min-h-[100vh] font-serif text-white bg-gradient-to-b from-black via-darkbrown to-darkorange;
+  @apply relative h-fit pb-24 sm:pb-16 min-h-[100vh] font-serif text-white bg-gradient-to-b from-black via-darkbrown to-brown;
 }
 
 .btn-filled {
   @apply rounded-lg font-sans bg-orange pb-1 pt-2 px-4 text-4xl border-2 border-brown border-t-yellow border-l-yellow hover:brightness-[115%] active:bg-darkorange active:border-orange active:border-t-darkbrown active:border-l-darkbrown disabled:bg-darkorange disabled:border-orange disabled:border-t-darkbrown disabled:border-l-darkbrown disabled:brightness-100;
+}
+
+.btn-filled-disableable {
+  @apply btn-filled disabled:bg-darkorange disabled:border-brown disabled:border-t-yellow disabled:border-l-yellow disabled:opacity-60;
+}
+
+.label {
+  @apply font-handwriting text-2.5xl -mb-1;
+}
+
+.select-option:first-of-type {
+  @apply rounded-t-lg;
+}
+
+.select-option:last-of-type {
+  @apply rounded-b-lg;
 }
 
 /* Chrome, Safari, Edge, Opera */

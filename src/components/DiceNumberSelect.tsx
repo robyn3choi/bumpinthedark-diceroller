@@ -13,7 +13,7 @@ export default function DiceNumberSelect({ value, onChange }) {
 
   return (
     <div className="text-left">
-      <div className="font-sans text-3xl">Dice count</div>
+      <div className="label">Dice Count</div>
       <div className="flex justify-center">
         <button
           onClick={decrement}
@@ -23,7 +23,7 @@ export default function DiceNumberSelect({ value, onChange }) {
         </button>
         <input
           type="number"
-          className="bg-[transparent] text-2xl appearance-none w-16 text-center border-y-2 border-x-0 border-orange"
+          className="bg-[transparent] pt-2 pb-1 font-sans text-4xl appearance-none w-16 text-center border-y-2 border-x-0 border-orange"
           value={value}
           onChange={(e) => onChange(Number(e.target.value) || '')}
         />

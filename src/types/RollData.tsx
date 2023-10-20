@@ -7,6 +7,7 @@ export default interface RollData {
   position: Position
   hasDisadvantage: boolean
   dice: number[]
+  diceCount: number
   resultDie: number
   text: string
 }

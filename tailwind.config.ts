@@ -20,6 +20,7 @@ const config: Config = {
       fontFamily: {
         serif: ['var(--font-spectral)'],
         sans: ['var(--font-cryptCreep)'],
+        handwriting: ['var(--font-jimNightshade)'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -27,6 +28,9 @@ const config: Config = {
       },
       borderWidth: {
         '3': '3px',
+      },
+      fontSize: {
+        '2.5xl': '1.7rem',
       },
     },
   },
