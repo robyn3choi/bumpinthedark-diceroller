@@ -1,14 +1,13 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { getRoomName } from 'utils/helpers'
 import Footer from 'components/Footer'
 import { useUser } from 'context/UserContext'
 
-export default function Lobby() {
+export default function Lobby({ room }: { room: string }) {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { setUsername } = useUser()
 
   const [username, setusername] = useState('')
@@ -17,8 +16,6 @@ export default function Lobby() {
   async function handleJoin(e: any) {
     e.preventDefault()
 
-    let room = searchParams.get('room')
-
     if (room) {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user?username=${username}&room=${room}`)
@@ -26,14 +23,15 @@ export default function Lobby() {
         if (result.exists) {
           throw new Error('There is already a user with this name in the room.')
         }
+        setUsername(username)
       } catch (err: any) {
         return setError(err.message)
       }
     } else {
       room = getRoomName()
+      setUsername(username)
+      router.push(`/room/${room}`)
     }
-    setUsername(username)
-    router.push(`/room/${room}`)
   }
 
   return (

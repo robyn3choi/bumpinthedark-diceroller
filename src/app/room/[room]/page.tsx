@@ -140,10 +140,9 @@ export default function Room({ params }: { params: { room: string } }) {
     }
   }, [username, room])
 
-  if (!username) return <Lobby />
+  if (!username) return <Lobby room={room} />
 
   function roll() {
-    console.log('roll')
     socket.emit('roll', {
       room,
       username,
@@ -153,7 +152,7 @@ export default function Room({ params }: { params: { room: string } }) {
       hasDisadvantage,
     })
   }
-  console.log(rollData)
+
   return (
     <>
       <div className="px-6 py-4 sm:p-8">
