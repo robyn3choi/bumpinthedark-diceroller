@@ -14,7 +14,13 @@ const config: Config = {
       orange: '#d55641',
       darkorange: '#b24430',
       brown: '#913827',
-      darkbrown: '#6d190e',
+      darkbrown: '#631f16',
+      lightblack: '#28292b',
+      darkgrey: '#35363a',
+      grey: '#4e5059',
+      lightgrey: '#61636e',
+      beige: '#96837d',
+      red: '#c02315',
     },
     extend: {
       screens: {

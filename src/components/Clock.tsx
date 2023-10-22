@@ -1,25 +1,52 @@
 import { useRef, useState } from 'react'
 import ClockSegment from './ClockSegment'
 import { BiCheck, BiEdit, BiPencil, BiSolidPencil } from 'react-icons/bi'
-import { TbCheck, TbPencil } from 'react-icons/tb'
+import {
+  TbArrowDown,
+  TbArrowUp,
+  TbCaretDown,
+  TbCaretDownFilled,
+  TbCaretUpFilled,
+  TbCheck,
+  TbPencil,
+  TbTrash,
+  TbX,
+} from 'react-icons/tb'
 
-const diameter = '140'
+const diameter = '130'
 
 type Props = {
   name: string
   segmentCount: number
+  isFirst?: boolean
+  isLast?: boolean
   highestFilledSegmentIndex: number
   onSegmentChange: (index: number) => void
   onEdit: (name, segmentCount) => void
+  onDelete: () => void
+  onMoveUp: () => void
+  onMoveDown: () => void
 }
 
-export default function Clock({ name, segmentCount, highestFilledSegmentIndex, onSegmentChange, onEdit }: Props) {
+export default function Clock({
+  name,
+  segmentCount,
+  isFirst,
+  isLast,
+  highestFilledSegmentIndex,
+  onSegmentChange,
+  onEdit,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+}: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [editingSegmentCount, setEditingSegmentCount] = useState(segmentCount)
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState<number | null>(null)
   // justClickedSegmentIndex is set when segment is clicked, is unset when mouse leaves segment
   // this is so that when you click a segment, it doesn't immediately go into preview mode
   const [justClickedSegmentIndex, setJustClickedSegmentIndex] = useState<number | null>(null)
+  const [isHovered, setIsHovered] = useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -53,8 +80,17 @@ export default function Clock({ name, segmentCount, highestFilledSegmentIndex, o
     }
   }
 
+  function handleStopHover() {
+    onEdit(inputRef.current?.value || '', editingSegmentCount)
+    setIsHovered(false)
+  }
+
   return (
-    <div className="relative text-orange flex flex-col items-center w-full">
+    <div
+      className="relative text-orange flex flex-col items-center w-full py-2"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleStopHover}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width={diameter}
@@ -78,7 +114,7 @@ export default function Clock({ name, segmentCount, highestFilledSegmentIndex, o
         ))}
       </svg>
       <div className="font-serif text-yellow text-lg mt-2.5 w-full h-8">
-        {isEditing ? (
+        {isHovered ? (
           <input
             ref={inputRef}
             defaultValue={name}
@@ -88,12 +124,33 @@ export default function Clock({ name, segmentCount, highestFilledSegmentIndex, o
           <div className="">{name}</div>
         )}
       </div>
-      <button
-        onClick={toggleEditing}
-        className="absolute rounded-full p-0.5 hover:bg-orange active:bg-darkorange -top-2 right-0"
-      >
-        {isEditing ? <TbCheck className="text-yellow w-7 h-7" /> : <TbPencil className="text-yellow w-7 h-7" />}
-      </button>
+      {isHovered && (
+        <>
+          {!isFirst && (
+            <button
+              onClick={onMoveUp}
+              className="absolute rounded-full p-0.5 hover:bg-grey active:bg-orange top-7 left-1"
+            >
+              <TbArrowUp className="text-yellow w-8 h-8" />
+            </button>
+          )}
+
+          {!isLast && (
+            <button
+              onClick={onMoveDown}
+              className="absolute rounded-full p-0.5 hover:bg-grey active:bg-orange top-[5.4rem] left-1"
+            >
+              <TbArrowDown className="text-yellow w-8 h-8" />
+            </button>
+          )}
+          <button
+            onClick={onDelete}
+            className="absolute rounded-full p-0.5 hover:bg-grey active:bg-orange -top-1 right-1"
+          >
+            <TbX className="text-yellow w-7 h-7" />
+          </button>
+        </>
+      )}
     </div>
   )
 }

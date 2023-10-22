@@ -12,9 +12,11 @@ export default function Lobby({ room }: { room: string }) {
 
   const [username, setusername] = useState('')
   const [error, setError] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
 
   async function handleJoin(e: any) {
     e.preventDefault()
+    setIsLoading(true)
 
     if (room) {
       try {
@@ -49,8 +51,8 @@ export default function Lobby({ room }: { room: string }) {
           className="focus:border-yellow focus:ring-yellow rounded-lg w-full sm:w-96 text-white text-5xl font-sans p-2 pb-1.5 pt-3 bg-[transparent] border-2 border-yellow text-center placeholder:text-yellow placeholder:opacity-60"
         />
         {error && <div className="text-red text-lg">{error}</div>}
-        <button disabled={!username} className="w-full sm:w-96 btn-filled-disableable !text-5xl">
-          Join game
+        <button disabled={!username || isLoading} className="w-full sm:w-96 btn-filled-disableable !text-5xl">
+          {isLoading ? 'Joining...' : 'Join game'}
         </button>
       </form>
       <Footer />

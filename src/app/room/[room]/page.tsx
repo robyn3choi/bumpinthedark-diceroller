@@ -22,6 +22,8 @@ import 'react-modern-drawer/dist/index.css'
 import RollResult from 'components/RollResult'
 import Clock from 'components/Clock'
 import ClocksPanel from 'components/ClocksPanel'
+import { TbLayoutSidebarLeftExpandFilled } from 'react-icons/tb'
+import useElementSize from 'utils/useElementSize'
 
 const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, { autoConnect: false })
 
@@ -35,8 +37,15 @@ export default function Room({ params }: { params: { room: string } }) {
   const [rollData, setRollData] = useState<RollData>()
   const [showPlayers, setShowPlayers] = useState<boolean>(false)
   const [showClocks, setShowClocks] = useState<boolean>(false)
+  const [showSidebar, setShowSidebar] = useState(true)
 
   const room = params.room
+
+  const [userPanelRef, userPanelSize, updateSize] = useElementSize()
+
+  useEffect(() => {
+    updateSize()
+  }, [users, updateSize])
 
   useEffect(() => {
     async function initSocket() {
@@ -144,7 +153,7 @@ export default function Room({ params }: { params: { room: string } }) {
     }
     return () => {
       if (socket) {
-        socket.emit('userLeft', username)
+        socket.disconnect()
       }
     }
   }, [username, room])
@@ -165,58 +174,45 @@ export default function Room({ params }: { params: { room: string } }) {
   return (
     <>
       <div className="flex justify-between w-full">
-        {/* {showPlayers && (
-          <div className="bg-darkorange border-r-4 border-darkbrown w-56  h-screen">
-            <button onClick={() => setShowPlayers(false)} className="ml-auto block">
-              <BiArrowToLeft className="text-yellow hover:brightness-125 w-8 h-8" />
-            </button>
-            <div className="label">Keeper</div>
-            <div className="label">Hunters</div>
-            {users.map((user) => (
-              <div key={user}>{user}</div>
-            ))}
-          </div>
-        )} */}
         <div className="px-6 py-4 sm:p-8 grow">
-          <h1 className="text-center text-7xl mb-2 mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
+          <h1 className="text-center text-7xl mb-2 mt-9 sm:mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
             Bump in the Dark
           </h1>
           <div className="text-center text-yellow mb-10">
             To invite players to join this room, send them this page’s URL.
           </div>
-          <button onClick={() => setShowPlayers(true)} className="icon-btn absolute left-8 top-8">
-            <BiGroup className="w-8 h-8 text-yellow" />
-          </button>
-          <button onClick={() => setShowClocks(true)} className="icon-btn absolute right-8 top-8">
-            <BiPieChartAlt className="w-8 h-8 text-yellow" />
+          <button onClick={() => setShowSidebar(true)} className="icon-btn fixed left-3 top-3">
+            <TbLayoutSidebarLeftExpandFilled className="w-8 h-8 text-yellow" />
           </button>
           <Drawer
-            open={showPlayers}
-            onClose={() => setShowPlayers(false)}
+            open={showSidebar}
+            onClose={() => setShowClocks(false)}
             direction="left"
             enableOverlay={false}
-            className="!bg-brown !w-52 p-3 text-3xl font-sans"
+            className="!bg-darkgrey !w-60 text-xl relative"
           >
-            <button onClick={() => setShowPlayers(false)} className="ml-auto block">
-              <BiArrowToLeft className="text-yellow hover:brightness-125 w-9 h-9" />
+            <button
+              onClick={() => setShowSidebar(false)}
+              className="absolute block rounded-full hover:bg-grey p-1 top-1 right-0"
+            >
+              <BiArrowToLeft className="text-yellow w-9 h-9" />
             </button>
-            <div className="label">Keeper</div>
-            <div className="label">Hunters</div>
-            {users.map((user) => (
-              <div key={user}>{user}</div>
-            ))}
-          </Drawer>
-          <Drawer
-            open={showClocks}
-            onClose={() => setShowClocks(false)}
-            direction="right"
-            enableOverlay={false}
-            className="!bg-darkbrown !w-52 p-3 text-3xl font-sans"
-          >
-            <button onClick={() => setShowClocks(false)} className="">
-              <BiArrowToRight className="text-yellow hover:brightness-125 w-9 h-9" />
-            </button>
-            <ClocksPanel />
+            <div className="flex flex-col">
+              <div ref={userPanelRef} className="border-b border-grey p-4">
+                <div className="label !mb-1">Keeper</div>
+                <div className="mb-4 text-yellow truncate">The blah blah blah</div>
+                <div className="label !mb-1">Hunters</div>
+                <div className="text-yellow">
+                  {users.map((user) => (
+                    <div key={user}>{user}</div>
+                  ))}
+                  {users.map((user) => (
+                    <div key={user}>{user}</div>
+                  ))}
+                </div>
+              </div>
+              <ClocksPanel yOffset={userPanelSize.height} />
+            </div>
           </Drawer>
           <div className="max-w-[28rem] mx-auto">
             <div className="xs:flex justify-center items-center gap-3 mb-4">

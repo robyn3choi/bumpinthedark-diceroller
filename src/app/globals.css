@@ -45,3 +45,15 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-grey rounded-full hover:bg-[#5b5a6b];
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-lightblack;
+}

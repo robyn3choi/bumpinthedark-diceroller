@@ -1,8 +1,9 @@
-const yellow = '#f8b87b'
+const yellow = '#ffb56f'
 const orange = '#d55641'
 const brown = '#913827'
-const darkBrown = '#6d190e'
+const darkBrown = '#631f16'
 const black = '#171515'
+const beige = '#96837d'
 
 function getCoordinatesForPercent(percent) {
   const x = Math.cos(2 * Math.PI * percent)
@@ -47,7 +48,7 @@ export default function ClockSegment({
     <>
       <path
         d={fillPathData}
-        fill={isPreviewing ? orange : isFilled ? yellow : brown}
+        fill={isPreviewing ? yellow : isFilled ? brown : beige}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onClick={onClick}
