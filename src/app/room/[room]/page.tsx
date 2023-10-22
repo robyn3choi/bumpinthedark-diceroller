@@ -2,6 +2,9 @@
 
 import { io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import Drawer from 'react-modern-drawer'
+import { BiGroup, BiPieChartAlt, BiArrowToLeft, BiArrowToRight } from 'react-icons/bi'
 import Lobby from 'components/Lobby'
 import Footer from 'components/Footer'
 import { useUser } from 'context/UserContext'
@@ -15,6 +18,10 @@ import Select from 'components/Select'
 import DiceNumberSelect from 'components/DiceNumberSelect'
 import Checkbox from 'components/Checkbox'
 import { getRollResultTypePunctuation } from 'utils/helpers'
+import 'react-modern-drawer/dist/index.css'
+import RollResult from 'components/RollResult'
+import Clock from 'components/Clock'
+import ClocksPanel from 'components/ClocksPanel'
 
 const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, { autoConnect: false })
 
@@ -26,6 +33,8 @@ export default function Room({ params }: { params: { room: string } }) {
   const [diceCount, setDiceCount] = useState<number>(0)
   const [hasDisadvantage, setHasDisadvantage] = useState<boolean>(false)
   const [rollData, setRollData] = useState<RollData>()
+  const [showPlayers, setShowPlayers] = useState<boolean>(false)
+  const [showClocks, setShowClocks] = useState<boolean>(false)
 
   const room = params.room
 
@@ -155,96 +164,103 @@ export default function Room({ params }: { params: { room: string } }) {
 
   return (
     <>
-      <div className="px-6 py-4 sm:p-8">
-        <h1 className="text-center text-7xl mb-2 mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
-          Bump in the Dark
-        </h1>
-        <div className="text-center text-yellow mb-10">
-          To invite players to join this room, send them this page’s URL.
-        </div>
-        <div className="absolute top-4 text-4xl font-sans">
-          {users.map((user) => (
-            <div key={user}>{user}</div>
-          ))}
-        </div>
-        <div className="max-w-[28rem] mx-auto">
-          <div className="xs:flex justify-center items-center gap-3 mb-4">
-            <Select
-              id="roll-type"
-              label="Roll Type"
-              options={Object.values(RollType)}
-              onChange={(value) => setRollType(value as RollType)}
-            />
-            <DiceNumberSelect value={diceCount} onChange={setDiceCount} />
-          </div>
-          {rollType === RollType.Action && (
-            <div className="mt-4">
-              <div className="label">Position</div>
-              <div className="grid grid-cols-2 gap-1.5 xs:flex">
-                {Object.values(Position).map((pos) => (
-                  <button
-                    key={pos}
-                    onClick={() => setPosition(pos)}
-                    disabled={pos === position}
-                    className="btn-filled grow"
-                  >
-                    {pos}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-6 font-bold text-xl text-center text-yellow">{copy.position[position]}</div>
-            </div>
-          )}
-          {position === Position.Hopeless && <div className="text-lg text-center">{copy.hopeless}</div>}
-          <div className="text-center mt-8">
-            <label className="flex items-center justify-center gap-2.5 mb-3 cursor-pointer w-fit mx-auto">
-              <Checkbox isChecked={hasDisadvantage} onChange={(e) => setHasDisadvantage(e.target.checked)} />
-              <div className="text-4xl font-sans mt-1.5">Disadvantage</div>
-            </label>
-            <button
-              disabled={position === Position.Hopeless}
-              onClick={roll}
-              className="btn-filled-disableable !border-3 !text-7xl !pt-3"
-            >
-              ROLL
+      <div className="flex justify-between w-full">
+        {/* {showPlayers && (
+          <div className="bg-darkorange border-r-4 border-darkbrown w-56  h-screen">
+            <button onClick={() => setShowPlayers(false)} className="ml-auto block">
+              <BiArrowToLeft className="text-yellow hover:brightness-125 w-8 h-8" />
             </button>
-            {rollData && (
-              <>
-                <hr className="text-orange mt-8" />
-                <div className="text-xl mt-6 mb-6">
-                  <strong>{rollData.username} </strong>
-                  {`made a `}
-                  {rollData.position && <strong className="text-yellow">{position.toLowerCase()} </strong>}
-                  <strong>{rollType.toLowerCase()} </strong>
-                  {`roll with `}
-                  <strong className="text-yellow">{diceCount} </strong>
-                  {rollData.diceCount === 1 ? 'die' : 'dice'}
-                  {rollData.hasDisadvantage ? (
-                    <>
-                      {` and`} <strong className="text-yellow">disadvantage</strong>:
-                    </>
-                  ) : (
-                    ':'
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {rollData?.dice.map((die, i) => (
-                    <Die
-                      key={i}
-                      num={die}
-                      isResult={i === rollData.resultDieIndex}
-                      isEliminated={i === rollData.eliminatedDieIndex}
-                    />
+            <div className="label">Keeper</div>
+            <div className="label">Hunters</div>
+            {users.map((user) => (
+              <div key={user}>{user}</div>
+            ))}
+          </div>
+        )} */}
+        <div className="px-6 py-4 sm:p-8 grow">
+          <h1 className="text-center text-7xl mb-2 mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
+            Bump in the Dark
+          </h1>
+          <div className="text-center text-yellow mb-10">
+            To invite players to join this room, send them this page’s URL.
+          </div>
+          <button onClick={() => setShowPlayers(true)} className="icon-btn absolute left-8 top-8">
+            <BiGroup className="w-8 h-8 text-yellow" />
+          </button>
+          <button onClick={() => setShowClocks(true)} className="icon-btn absolute right-8 top-8">
+            <BiPieChartAlt className="w-8 h-8 text-yellow" />
+          </button>
+          <Drawer
+            open={showPlayers}
+            onClose={() => setShowPlayers(false)}
+            direction="left"
+            enableOverlay={false}
+            className="!bg-brown !w-52 p-3 text-3xl font-sans"
+          >
+            <button onClick={() => setShowPlayers(false)} className="ml-auto block">
+              <BiArrowToLeft className="text-yellow hover:brightness-125 w-9 h-9" />
+            </button>
+            <div className="label">Keeper</div>
+            <div className="label">Hunters</div>
+            {users.map((user) => (
+              <div key={user}>{user}</div>
+            ))}
+          </Drawer>
+          <Drawer
+            open={showClocks}
+            onClose={() => setShowClocks(false)}
+            direction="right"
+            enableOverlay={false}
+            className="!bg-darkbrown !w-52 p-3 text-3xl font-sans"
+          >
+            <button onClick={() => setShowClocks(false)} className="">
+              <BiArrowToRight className="text-yellow hover:brightness-125 w-9 h-9" />
+            </button>
+            <ClocksPanel />
+          </Drawer>
+          <div className="max-w-[28rem] mx-auto">
+            <div className="xs:flex justify-center items-center gap-3 mb-4">
+              <Select
+                id="roll-type"
+                label="Roll Type"
+                options={Object.values(RollType)}
+                onChange={(value) => setRollType(value as RollType)}
+              />
+              <DiceNumberSelect value={diceCount} onChange={setDiceCount} />
+            </div>
+            {rollType === RollType.Action && (
+              <div className="mt-4">
+                <div className="label">Position</div>
+                <div className="grid grid-cols-2 gap-1.5 xs:flex">
+                  {Object.values(Position).map((pos) => (
+                    <button
+                      key={pos}
+                      onClick={() => setPosition(pos)}
+                      disabled={pos === position}
+                      className="btn-filled grow"
+                    >
+                      {pos}
+                    </button>
                   ))}
                 </div>
-                <div className="mt-6 text-xl">
-                  <span className="line-through">{rollData.eliminatedRollResultType}</span>
-                  {'  '}
-                  <strong>{rollData.rollResultType + getRollResultTypePunctuation(rollData.rollResultType)}</strong>
-                </div>
-                {rollData.rollType !== RollType.Fortune && <div className="mt-1 text-xl">{rollData.text}</div>}
-              </>
+                <div className="mt-6 font-bold text-xl text-center text-yellow">{copy.position[position]}</div>
+              </div>
             )}
+            {position === Position.Hopeless && <div className="text-lg text-center">{copy.hopeless}</div>}
+            <div className="text-center mt-8">
+              <label className="flex items-center justify-center gap-2.5 mb-3 cursor-pointer w-fit mx-auto">
+                <Checkbox isChecked={hasDisadvantage} onChange={(e) => setHasDisadvantage(e.target.checked)} />
+                <div className="text-4xl font-sans mt-1.5">Disadvantage</div>
+              </label>
+              <button
+                disabled={position === Position.Hopeless}
+                onClick={roll}
+                className="btn-filled-disableable !border-3 !text-7xl !pt-3"
+              >
+                ROLL
+              </button>
+              <RollResult rollData={rollData} />
+            </div>
           </div>
         </div>
       </div>

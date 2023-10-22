@@ -18,6 +18,10 @@ body {
   @apply btn-filled disabled:bg-darkorange disabled:border-brown disabled:border-t-yellow disabled:border-l-yellow disabled:opacity-60;
 }
 
+.icon-btn {
+  @apply btn-filled !rounded-full !border-none !p-1.5;
+}
+
 .label {
   @apply font-handwriting text-2.5xl -mb-1;
 }
