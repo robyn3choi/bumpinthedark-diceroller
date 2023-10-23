@@ -1,10 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Socket } from 'socket.io-client'
 import { nanoid } from 'nanoid'
 import ClockData from 'types/ClockData'
 import Clock from './Clock'
+import useLocalStorage from '@rehooks/local-storage'
+import { getStorageKey } from 'utils/helpers'
 
-export default function ClocksPanel({ yOffset }: { yOffset: number }) {
+type Props = {
+  room: string
+  socket: Socket
+  yOffset: number
+}
+
+export default function ClocksPanel({ room, socket, yOffset }: Props) {
+  const [data, setData] = useLocalStorage(getStorageKey(room), { clocks: [] as ClockData[] })
   const [clocks, setClocks] = useState<ClockData[]>([])
+
+  useEffect(() => {
+    console.log('data change')
+    setClocks(data.clocks)
+  }, [])
+
+  useEffect(() => {
+    setData({ clocks })
+    socket.emit('clocksUpdated', { room, clocks })
+  }, [clocks, room, setData, socket])
 
   function addClock() {
     setClocks((prevState) => [

@@ -4,12 +4,18 @@ import { createContext, useContext, useState, useMemo, ReactNode } from 'react'
 
 const UserContext = createContext<ProviderValue | undefined>(undefined)
 
-type ProviderValue = { username: string; setUsername: (value: string) => void }
+type ProviderValue = {
+  username: string
+  setUsername: (value: string) => void
+  isKeeper: boolean
+  setIsKeeper: (value: boolean) => void
+}
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<string>('')
+  const [isKeeper, setIsKeeper] = useState(false)
 
-  const providerValue = useMemo(() => ({ username, setUsername }), [username])
+  const providerValue = useMemo(() => ({ username, setUsername, isKeeper, setIsKeeper }), [isKeeper, username])
 
   return <UserContext.Provider value={providerValue}>{children}</UserContext.Provider>
 }

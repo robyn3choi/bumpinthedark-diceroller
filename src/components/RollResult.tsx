@@ -38,7 +38,9 @@ export default function RollResult({ rollData }: { rollData?: RollData }) {
       <div className="mt-6 text-xl">
         <span className="line-through">{rollData.eliminatedRollResultType}</span>
         {'  '}
-        <strong>{rollData.rollResultType + getRollResultTypePunctuation(rollData.rollResultType)}</strong>
+        <strong className="text-yellow">
+          {rollData.rollResultType + getRollResultTypePunctuation(rollData.rollResultType)}
+        </strong>
       </div>
       {rollData.rollType !== RollType.Fortune && <div className="mt-1 text-xl">{rollData.text}</div>}
     </>

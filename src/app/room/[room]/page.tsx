@@ -1,11 +1,11 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Drawer from 'react-modern-drawer'
 import { BiGroup, BiPieChartAlt, BiArrowToLeft, BiArrowToRight } from 'react-icons/bi'
-import Lobby from 'components/Lobby'
 import Footer from 'components/Footer'
 import { useUser } from 'context/UserContext'
 import RollType from 'enums/RollType'
@@ -22,21 +22,30 @@ import 'react-modern-drawer/dist/index.css'
 import RollResult from 'components/RollResult'
 import Clock from 'components/Clock'
 import ClocksPanel from 'components/ClocksPanel'
-import { TbLayoutSidebarLeftExpandFilled } from 'react-icons/tb'
+import {
+  TbArrowBarToLeft,
+  TbArrowLeft,
+  TbCaretLeft,
+  TbCaretLeftFilled,
+  TbLayoutSidebarLeftCollapseFilled,
+  TbLayoutSidebarLeftExpandFilled,
+  TbLayoutSidebarRightCollapseFilled,
+} from 'react-icons/tb'
 import useElementSize from 'utils/useElementSize'
+
+const Lobby = dynamic(() => import('components/Lobby'), { ssr: false })
 
 const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, { autoConnect: false })
 
 export default function Room({ params }: { params: { room: string } }) {
-  const { username } = useUser()
-  const [users, setUsers] = useState<string[]>([])
+  const { username, isKeeper } = useUser()
+  const [keeper, setKeeper] = useState<string>()
+  const [hunters, setHunters] = useState<string[]>([])
   const [rollType, setRollType] = useState<RollType>(RollType.Action)
   const [position, setPosition] = useState<Position>(Position.Risky)
   const [diceCount, setDiceCount] = useState<number>(0)
   const [hasDisadvantage, setHasDisadvantage] = useState<boolean>(false)
   const [rollData, setRollData] = useState<RollData>()
-  const [showPlayers, setShowPlayers] = useState<boolean>(false)
-  const [showClocks, setShowClocks] = useState<boolean>(false)
   const [showSidebar, setShowSidebar] = useState(true)
 
   const room = params.room
@@ -45,7 +54,7 @@ export default function Room({ params }: { params: { room: string } }) {
 
   useEffect(() => {
     updateSize()
-  }, [users, updateSize])
+  }, [hunters, updateSize])
 
   useEffect(() => {
     async function initSocket() {
@@ -54,15 +63,23 @@ export default function Room({ params }: { params: { room: string } }) {
       socket.connect()
 
       socket.on('connect', () => {
-        console.log('joining')
-        console.log(room)
-        socket.emit('userJoined', { username, room })
+        socket.emit('userJoined', { username, room, isKeeper })
       })
 
       socket.on('usersUpdated', (updatedUsers) => {
         console.log('updatedUsers ', updatedUsers)
-        setUsers(updatedUsers)
+        const hunters = updatedUsers.filter((u) => !u.isKeeper).map((u) => u.name)
+        const keeper = updatedUsers.find((u) => u.isKeeper)?.name
+        setHunters(hunters)
+        setKeeper(keeper)
       })
+
+      // socket.on('clocksUpdated', (clocks) => {
+      //  const hunters = updatedUsers.filter((u) => !u.isKeeper).map((u) => u.name)
+      //   const keeper = updatedUsers.find((u) => u.isKeeper)?.name
+      //   setHunters(hunters)
+      //   setKeeper(keeper)
+      // })
 
       // diceCount can be 0
       socket.on('rolled', ({ rollType, position, hasDisadvantage, dice, diceCount, username }) => {
@@ -156,7 +173,7 @@ export default function Room({ params }: { params: { room: string } }) {
         socket.disconnect()
       }
     }
-  }, [username, room])
+  }, [username, room, isKeeper])
 
   if (!username) return <Lobby room={room} />
 
@@ -178,40 +195,42 @@ export default function Room({ params }: { params: { room: string } }) {
           <h1 className="text-center text-7xl mb-2 mt-9 sm:mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
             Bump in the Dark
           </h1>
-          <div className="text-center text-yellow mb-10">
-            To invite players to join this room, send them this page’s URL.
+          <div className="text-center text-yellow mb-10 max-w-[500px] mx-auto">
+            <p>To invite players to join this room, send them this page’s URL.</p>
+            <p>
+              If you are the keeper, use this page’s URL for your next session to restore your clocks from this session.
+            </p>
           </div>
           <button onClick={() => setShowSidebar(true)} className="icon-btn fixed left-3 top-3">
             <TbLayoutSidebarLeftExpandFilled className="w-8 h-8 text-yellow" />
           </button>
           <Drawer
             open={showSidebar}
-            onClose={() => setShowClocks(false)}
+            onClose={() => setShowSidebar(false)}
             direction="left"
             enableOverlay={false}
             className="!bg-darkgrey !w-60 text-xl relative"
           >
             <button
               onClick={() => setShowSidebar(false)}
-              className="absolute block rounded-full hover:bg-grey p-1 top-1 right-0"
+              className="absolute block rounded-full hover:bg-grey p-1 top-1 right-1"
             >
-              <BiArrowToLeft className="text-yellow w-9 h-9" />
+              <TbArrowBarToLeft className="text-yellow w-9 h-9" />
             </button>
             <div className="flex flex-col">
               <div ref={userPanelRef} className="border-b border-grey p-4">
                 <div className="label !mb-1">Keeper</div>
-                <div className="mb-4 text-yellow truncate">The blah blah blah</div>
+                <div className="mb-4 text-yellow truncate">{keeper || <em className="text-beige">Missing</em>}</div>
                 <div className="label !mb-1">Hunters</div>
                 <div className="text-yellow">
-                  {users.map((user) => (
-                    <div key={user}>{user}</div>
-                  ))}
-                  {users.map((user) => (
-                    <div key={user}>{user}</div>
-                  ))}
+                  {hunters.length ? (
+                    hunters.map((hunter) => <div key={hunter}>{hunter}</div>)
+                  ) : (
+                    <em className="text-beige">No one’s here yet</em>
+                  )}
                 </div>
               </div>
-              <ClocksPanel yOffset={userPanelSize.height} />
+              <ClocksPanel room={room} yOffset={userPanelSize.height} />
             </div>
           </Drawer>
           <div className="max-w-[28rem] mx-auto">
@@ -239,7 +258,7 @@ export default function Room({ params }: { params: { room: string } }) {
                     </button>
                   ))}
                 </div>
-                <div className="mt-6 font-bold text-xl text-center text-yellow">{copy.position[position]}</div>
+                <div className="mt-5 font-bold text-xl text-center text-yellow">{copy.position[position]}</div>
               </div>
             )}
             {position === Position.Hopeless && <div className="text-lg text-center">{copy.hopeless}</div>}

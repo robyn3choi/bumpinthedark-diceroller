@@ -1,6 +1,10 @@
 import RollResultType from 'enums/RollResultType'
 import { uniqueNamesGenerator, colors, animals, NumberDictionary } from 'unique-names-generator'
 
+export function getStorageKey(room) {
+  return `bumpinthedark-diceroller_${room}`
+}
+
 export function isVowel(c) {
   return ['a', 'e', 'i', 'o', 'u'].indexOf(c.toLowerCase()) !== -1
 }
