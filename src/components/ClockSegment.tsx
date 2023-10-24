@@ -1,9 +1,4 @@
-const yellow = '#ffb56f'
-const orange = '#d55641'
-const brown = '#913827'
-const darkBrown = '#631f16'
-const black = '#171515'
-const beige = '#96837d'
+import { useUser } from 'context/UserContext'
 
 function getCoordinatesForPercent(percent) {
   const x = Math.cos(2 * Math.PI * percent)
@@ -30,6 +25,9 @@ export default function ClockSegment({
   onMouseLeave,
   onClick,
 }: Props) {
+  const { isKeeper } = useUser()
+
+  // svg logic from https://david-gilbertson.medium.com/a-simple-pie-chart-in-svg-dbdd653b6936
   const segmentPercent = 1 / segmentCount
   const [startX, startY] = getCoordinatesForPercent(index * segmentPercent)
   const [endX, endY] = getCoordinatesForPercent((index + 1) * segmentPercent)
@@ -49,13 +47,18 @@ export default function ClockSegment({
       <path
         d={fillPathData}
         fill={isPreviewing ? yellow : isFilled ? brown : beige}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onClick={onClick}
-        cursor="pointer"
+        onMouseEnter={isKeeper ? onMouseEnter : undefined}
+        onMouseLeave={isKeeper ? onMouseLeave : undefined}
+        onClick={isKeeper ? onClick : undefined}
+        cursor={isKeeper ? 'pointer' : undefined}
       />
       {/* stroke */}
       <path d={strokePathData} fill="none" stroke={black} strokeWidth="0.05" />
     </>
   )
 }
+
+const yellow = '#ffb56f'
+const brown = '#913827'
+const black = '#171515'
+const beige = '#96837d'

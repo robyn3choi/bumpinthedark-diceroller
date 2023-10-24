@@ -11,6 +11,7 @@ const config: Config = {
       white: '#f7f7f7',
       black: '#171515',
       yellow: '#f8b87b',
+      lightorange: '#fb994f',
       orange: '#d55641',
       darkorange: '#b24430',
       brown: '#913827',
@@ -36,6 +37,7 @@ const config: Config = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       borderWidth: {
+        '1': '1px',
         '3': '3px',
       },
       fontSize: {

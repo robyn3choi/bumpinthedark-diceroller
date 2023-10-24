@@ -7,19 +7,19 @@ html {
 }
 
 body {
-  @apply relative h-fit pb-24 sm:pb-16 min-h-[100vh] font-serif text-white bg-gradient-to-b from-black via-darkbrown to-brown;
+  @apply relative h-fit pb-36 sm:pb-16 min-h-[100vh] font-serif text-white bg-gradient-to-b from-black via-darkbrown to-brown;
 }
 
 .btn-filled {
-  @apply rounded-lg font-sans bg-orange pb-1 pt-2 px-4 text-4xl border-2 border-brown border-t-yellow border-l-yellow hover:brightness-[115%] active:bg-darkorange active:border-orange active:border-t-darkbrown active:border-l-darkbrown disabled:bg-darkorange disabled:border-orange disabled:border-t-darkbrown disabled:border-l-darkbrown disabled:brightness-100;
+  @apply rounded-lg font-sans bg-orange pb-1 pt-2 px-4 text-4xl border-2 border-brown border-t-lightorange border-l-lightorange hover:brightness-[115%] active:bg-darkorange active:border-orange active:border-t-darkbrown active:border-l-darkbrown disabled:bg-darkorange disabled:border-orange disabled:border-t-darkbrown disabled:border-l-darkbrown disabled:brightness-100;
 }
 
 .btn-filled-disableable {
-  @apply btn-filled disabled:bg-darkorange disabled:border-brown disabled:border-t-yellow disabled:border-l-yellow disabled:opacity-60;
+  @apply btn-filled disabled:bg-darkorange disabled:border-brown disabled:border-t-lightorange disabled:border-l-lightorange disabled:opacity-60;
 }
-
+/* !border-t-1 !border-l-1 !border-b-1 !border-r-1  */
 .icon-btn {
-  @apply btn-filled !rounded-full !border-none !p-1.5;
+  @apply btn-filled !bg-gradient-to-b from-yellow via-lightorange to-orange !rounded-full !border-none !p-1.5 shadow-lg;
 }
 
 .label {

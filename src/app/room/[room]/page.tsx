@@ -1,41 +1,32 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import Drawer from 'react-modern-drawer'
-import { BiGroup, BiPieChartAlt, BiArrowToLeft, BiArrowToRight } from 'react-icons/bi'
 import Footer from 'components/Footer'
 import { useUser } from 'context/UserContext'
 import RollType from 'enums/RollType'
 import Position from 'enums/Position'
 import RollData from 'types/RollData'
-import Die from 'components/Die'
 import * as copy from 'utils/copy'
 import RollResultType from 'enums/RollResultType'
 import Select from 'components/Select'
 import DiceNumberSelect from 'components/DiceNumberSelect'
 import Checkbox from 'components/Checkbox'
-import { getRollResultTypePunctuation } from 'utils/helpers'
 import 'react-modern-drawer/dist/index.css'
 import RollResult from 'components/RollResult'
-import Clock from 'components/Clock'
 import ClocksPanel from 'components/ClocksPanel'
 import {
   TbArrowBarToLeft,
   TbArrowLeft,
   TbCaretLeft,
-  TbCaretLeftFilled,
-  TbLayoutSidebarLeftCollapseFilled,
+  TbChevronLeft,
   TbLayoutSidebarLeftExpandFilled,
-  TbLayoutSidebarRightCollapseFilled,
 } from 'react-icons/tb'
 import useElementSize from 'utils/useElementSize'
+import socket from 'utils/socket'
 
 const Lobby = dynamic(() => import('components/Lobby'), { ssr: false })
-
-const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, { autoConnect: false })
 
 export default function Room({ params }: { params: { room: string } }) {
   const { username, isKeeper } = useUser()
@@ -68,22 +59,15 @@ export default function Room({ params }: { params: { room: string } }) {
 
       socket.on('usersUpdated', (updatedUsers) => {
         console.log('updatedUsers ', updatedUsers)
+
         const hunters = updatedUsers.filter((u) => !u.isKeeper).map((u) => u.name)
         const keeper = updatedUsers.find((u) => u.isKeeper)?.name
         setHunters(hunters)
         setKeeper(keeper)
       })
 
-      // socket.on('clocksUpdated', (clocks) => {
-      //  const hunters = updatedUsers.filter((u) => !u.isKeeper).map((u) => u.name)
-      //   const keeper = updatedUsers.find((u) => u.isKeeper)?.name
-      //   setHunters(hunters)
-      //   setKeeper(keeper)
-      // })
-
       // diceCount can be 0
       socket.on('rolled', ({ rollType, position, hasDisadvantage, dice, diceCount, username }) => {
-        console.log('rolled')
         const sortedDice = [...dice].sort((a, b) => a - b)
         const lowestDie = sortedDice[0]
         const highestDie = sortedDice[dice.length - 1]
@@ -192,7 +176,7 @@ export default function Room({ params }: { params: { room: string } }) {
     <>
       <div className="flex justify-between w-full">
         <div className="px-6 py-4 sm:p-8 grow">
-          <h1 className="text-center text-7xl mb-2 mt-9 sm:mt-8 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
+          <h1 className="text-center text-7xl mb-2 mt-6 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
             Bump in the Dark
           </h1>
           <div className="text-center text-yellow mb-10 max-w-[500px] mx-auto">
@@ -201,8 +185,11 @@ export default function Room({ params }: { params: { room: string } }) {
               If you are the keeper, use this page’s URL for your next session to restore your clocks from this session.
             </p>
           </div>
-          <button onClick={() => setShowSidebar(true)} className="icon-btn fixed left-3 top-3">
-            <TbLayoutSidebarLeftExpandFilled className="w-8 h-8 text-yellow" />
+          <button onClick={() => setShowSidebar(true)} className="icon-btn fixed hidden sm:block left-3 top-3 z-50">
+            <TbLayoutSidebarLeftExpandFilled className="w-10 h-10 text-brown" />
+          </button>
+          <button onClick={() => setShowSidebar(true)} className="icon-btn fixed block sm:hidden bottom-5 right-5 z-50">
+            <TbLayoutSidebarLeftExpandFilled className="w-11 h-11 text-brown" />
           </button>
           <Drawer
             open={showSidebar}
@@ -215,7 +202,7 @@ export default function Room({ params }: { params: { room: string } }) {
               onClick={() => setShowSidebar(false)}
               className="absolute block rounded-full hover:bg-grey p-1 top-1 right-1"
             >
-              <TbArrowBarToLeft className="text-yellow w-9 h-9" />
+              <TbChevronLeft className="text-yellow w-8 h-8" />
             </button>
             <div className="flex flex-col">
               <div ref={userPanelRef} className="border-b border-grey p-4">
@@ -230,7 +217,7 @@ export default function Room({ params }: { params: { room: string } }) {
                   )}
                 </div>
               </div>
-              <ClocksPanel room={room} yOffset={userPanelSize.height} />
+              <ClocksPanel socket={socket} room={room} yOffset={userPanelSize.height} />
             </div>
           </Drawer>
           <div className="max-w-[28rem] mx-auto">

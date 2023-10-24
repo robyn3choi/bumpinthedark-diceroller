@@ -10,7 +10,7 @@ import { useUser } from 'context/UserContext'
 // if the url includes a room:
 //    if the user has saved data for this room, they are the keeper
 //    else if the room already exists, the user can join as a hunter
-export default function Lobby({ room }: { room: string }) {
+export default function Lobby({ room }: { room?: string }) {
   const router = useRouter()
   const { setUsername, setIsKeeper } = useUser()
 
@@ -22,7 +22,6 @@ export default function Lobby({ room }: { room: string }) {
 
   useEffect(() => {
     if (room) {
-      console.log(savedRoomData)
       if (savedRoomData) {
         setIsKeeper(true)
       }
@@ -44,6 +43,7 @@ export default function Lobby({ room }: { room: string }) {
         }
         setUsername(username)
       } catch (err: any) {
+        setIsLoading(false)
         return setError(err.message)
       }
     } else {
@@ -82,7 +82,7 @@ export default function Lobby({ room }: { room: string }) {
         <h1 className="text-center text-7xl mt-8 mb-2 font-sans font-bold bg-gradient-to-b from-yellow to-orange text-[transparent] bg-clip-text">
           Bump in the Dark
         </h1>
-        {text && <div className="text-base text-center mb-2 max-w-[400px]">{text}</div>}
+        {text && <div className="text-base text-center mb-2 max-w-[450px]">{text}</div>}
         <input
           placeholder="Enter your name"
           onChange={(e) => setusername(e.target.value)}

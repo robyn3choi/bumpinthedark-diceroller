@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="text-yellow p-4 absolute bottom-1 text-center w-full">
+    <div className="text-yellow p-4 mb-12 sm:mb-0 absolute bottom-1 text-center w-full">
       This is an online dice roller for{' '}
       <a
         className="underline hover:text-white"

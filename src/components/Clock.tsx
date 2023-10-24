@@ -1,17 +1,7 @@
 import { useRef, useState } from 'react'
 import ClockSegment from './ClockSegment'
-import { BiCheck, BiEdit, BiPencil, BiSolidPencil } from 'react-icons/bi'
-import {
-  TbArrowDown,
-  TbArrowUp,
-  TbCaretDown,
-  TbCaretDownFilled,
-  TbCaretUpFilled,
-  TbCheck,
-  TbPencil,
-  TbTrash,
-  TbX,
-} from 'react-icons/tb'
+import { TbArrowDown, TbArrowUp, TbX } from 'react-icons/tb'
+import { useUser } from 'context/UserContext'
 
 const diameter = '130'
 
@@ -40,6 +30,7 @@ export default function Clock({
   onMoveUp,
   onMoveDown,
 }: Props) {
+  const { isKeeper } = useUser()
   const [isEditing, setIsEditing] = useState(false)
   const [editingSegmentCount, setEditingSegmentCount] = useState(segmentCount)
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState<number | null>(null)
@@ -88,8 +79,8 @@ export default function Clock({
   return (
     <div
       className="relative text-orange flex flex-col items-center w-full py-2"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleStopHover}
+      onMouseEnter={isKeeper ? () => setIsHovered(true) : undefined}
+      onMouseLeave={isKeeper ? handleStopHover : undefined}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
