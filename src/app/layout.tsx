@@ -27,7 +27,7 @@ const jimNightShade = Jim_Nightshade({
   variable: '--font-jimNightshade',
 })
 
-const title = 'Bump in the Dark | Dice Roller'
+const title = 'Bump in the Dark | Dice Roller & Clock Tracker'
 const description =
   'Roll dice and track clocks with this companion app for the tabletop roleplaying game, Bump in the Dark.'
 
