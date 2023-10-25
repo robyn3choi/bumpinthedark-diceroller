@@ -55,8 +55,7 @@ export default function Lobby({ room }: { room?: string }) {
 
   const text = !room ? (
     <>
-      Since you are creating a new room, you will be the <strong>keeper</strong>. Your clocks will be saved to your
-      browser storage, so make sure you are not using Incognito or Brave Shields.
+      Since you are creating a new room, you will be the <strong>keeper</strong>.
     </>
   ) : savedRoomData ? (
     <>Welcome back to this room. You will be the keeper again and your clocks from last time will be restored.</>

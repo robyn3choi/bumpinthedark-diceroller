@@ -37,7 +37,7 @@ export default function Room({ params }: { params: { room: string } }) {
   const [diceCount, setDiceCount] = useState<number>(0)
   const [hasDisadvantage, setHasDisadvantage] = useState<boolean>(false)
   const [rollData, setRollData] = useState<RollData>()
-  const [showSidebar, setShowSidebar] = useState(true)
+  const [showSidebar, setShowSidebar] = useState(false)
 
   const room = params.room
 
@@ -213,7 +213,7 @@ export default function Room({ params }: { params: { room: string } }) {
                   {hunters.length ? (
                     hunters.map((hunter) => <div key={hunter}>{hunter}</div>)
                   ) : (
-                    <em className="text-beige">No one’s here yet</em>
+                    <em className="text-beige">No one’s here yet.</em>
                   )}
                 </div>
               </div>

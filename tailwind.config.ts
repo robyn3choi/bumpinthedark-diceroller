@@ -13,6 +13,7 @@ const config: Config = {
       yellow: '#f8b87b',
       lightorange: '#fb994f',
       orange: '#d55641',
+      darkishorange: '#c14f3b',
       darkorange: '#b24430',
       brown: '#913827',
       darkbrown: '#631f16',

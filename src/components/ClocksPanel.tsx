@@ -100,28 +100,32 @@ export default function ClocksPanel({ room, socket, yOffset }: Props) {
   }
 
   return (
-    <div className="text-center h-screen pt-2 px-2 overflow-y-auto" style={{ height: `calc(100vh - ${yOffset}px)` }}>
+    <div className="text-center h-screen pt-1 px-2 overflow-y-auto" style={{ height: `calc(100vh - ${yOffset}px)` }}>
       {isKeeper && (
         <button className="btn-filled mt-4 mb-2" onClick={addClock}>
           Add clock
         </button>
       )}
-      <div className="flex flex-col items-center gap-4 pt-4">
-        {clocks.map((c, i) => (
-          <Clock
-            key={c.id}
-            name={c.name}
-            segmentCount={c.segmentCount}
-            highestFilledSegmentIndex={c.highestFilledSegmentIndex}
-            onSegmentChange={(segmentIndex) => handleSegmentChange(segmentIndex, i)}
-            onEdit={(name, segmentCount) => handleEdit(name, segmentCount, i)}
-            onDelete={() => handleDelete(i)}
-            onMoveUp={() => handleMoveUp(i)}
-            onMoveDown={() => handleMoveDown(i)}
-            isFirst={i === 0}
-            isLast={i === clocks.length - 1}
-          />
-        ))}
+      <div className="flex flex-col items-center gap-3 pt-3">
+        {clocks.length ? (
+          clocks.map((c, i) => (
+            <Clock
+              key={c.id}
+              name={c.name}
+              segmentCount={c.segmentCount}
+              highestFilledSegmentIndex={c.highestFilledSegmentIndex}
+              onSegmentChange={(segmentIndex) => handleSegmentChange(segmentIndex, i)}
+              onEdit={(name, segmentCount) => handleEdit(name, segmentCount, i)}
+              onDelete={() => handleDelete(i)}
+              onMoveUp={() => handleMoveUp(i)}
+              onMoveDown={() => handleMoveDown(i)}
+              isFirst={i === 0}
+              isLast={i === clocks.length - 1}
+            />
+          ))
+        ) : (
+          <em className="text-beige">No clocks yet.</em>
+        )}
       </div>
     </div>
   )
