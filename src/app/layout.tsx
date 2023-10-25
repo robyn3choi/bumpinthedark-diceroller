@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     url: 'https://bumpinthedark-diceroller.vercel.app/',
     title,
     description,
-    images: [{ url: 'https://img.itch.zone/aW1hZ2UvMTQwNjM0MC84Njk0OTg0LmpwZw==/original/QWW1yv.jpg' }],
+    images: [{ url: 'https://i.postimg.cc/MGL4bXSG/QWW1yv.jpg' }],
   },
 }
 
