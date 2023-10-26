@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import Drawer from 'react-modern-drawer'
+import { useTour } from '@reactour/tour'
 import Footer from 'components/Footer'
 import { useUser } from 'context/UserContext'
 import RollType from 'enums/RollType'
@@ -16,19 +17,16 @@ import Checkbox from 'components/Checkbox'
 import 'react-modern-drawer/dist/index.css'
 import RollResult from 'components/RollResult'
 import ClocksPanel from 'components/ClocksPanel'
-import {
-  TbArrowBarToLeft,
-  TbArrowLeft,
-  TbCaretLeft,
-  TbChevronLeft,
-  TbLayoutSidebarLeftExpandFilled,
-} from 'react-icons/tb'
+import { TbChevronLeft, TbLayoutSidebarLeftExpandFilled, TbLayoutSidebarLeftCollapseFilled } from 'react-icons/tb'
 import useElementSize from 'utils/useElementSize'
 import socket from 'utils/socket'
+import OnboardingProvider from 'components/OnboardingProvider'
+import useLocalStorage from '@rehooks/local-storage'
+import { ONBOARDING_STORAGE_KEY } from 'utils/constants'
 
 const Lobby = dynamic(() => import('components/Lobby'), { ssr: false })
 
-export default function Room({ params }: { params: { room: string } }) {
+function Room({ room }: { room: string }) {
   const { username, isKeeper } = useUser()
   const [keeper, setKeeper] = useState<string>()
   const [hunters, setHunters] = useState<string[]>([])
@@ -39,9 +37,16 @@ export default function Room({ params }: { params: { room: string } }) {
   const [rollData, setRollData] = useState<RollData>()
   const [showSidebar, setShowSidebar] = useState(false)
 
-  const room = params.room
-
   const [userPanelRef, userPanelSize, updateSize] = useElementSize()
+
+  const [hasOnboarded] = useLocalStorage(ONBOARDING_STORAGE_KEY)
+  const { setIsOpen: setIsOnboarding } = useTour()
+
+  useEffect(() => {
+    if (!hasOnboarded && username) {
+      setIsOnboarding(true)
+    }
+  }, [setIsOnboarding, hasOnboarded, username])
 
   useEffect(() => {
     updateSize()
@@ -106,7 +111,10 @@ export default function Room({ params }: { params: { room: string } }) {
         let rollResultType = RollResultType.Miss
 
         if (resultDie === 6) {
-          if (diceCount > 0 && dice.filter((die) => die === 6).length > 1) {
+          let numSixes = dice.filter((die) => die === 6).length
+          // don't count eliminated 6's when determining if this roll is a critical
+          if (eliminatedDieIndex != null && dice[eliminatedDieIndex] === 6) numSixes -= 1
+          if (numSixes > 1 && diceCount > 0) {
             rollResultType = RollResultType.Critical
           } else {
             rollResultType = RollResultType.StrongHit
@@ -185,11 +193,21 @@ export default function Room({ params }: { params: { room: string } }) {
               If you are the keeper, use this page’s URL for your next session to restore your clocks from this session.
             </p>
           </div>
-          <button onClick={() => setShowSidebar(true)} className="icon-btn fixed hidden sm:block left-3 top-3 z-50">
+          <button
+            onClick={() => setShowSidebar((prevState) => !prevState)}
+            className="sidebar-btn icon-btn fixed hidden sm:block left-3 top-3 z-50"
+          >
             <TbLayoutSidebarLeftExpandFilled className="w-10 h-10 text-brown" />
           </button>
-          <button onClick={() => setShowSidebar(true)} className="icon-btn fixed block sm:hidden bottom-5 right-5 z-50">
-            <TbLayoutSidebarLeftExpandFilled className="w-11 h-11 text-brown" />
+          <button
+            onClick={() => setShowSidebar((prevState) => !prevState)}
+            className="sidebar-btn_mobile icon-btn fixed block sm:hidden bottom-5 right-5 z-50"
+          >
+            {showSidebar ? (
+              <TbLayoutSidebarLeftCollapseFilled className="w-10 h-10 text-brown" />
+            ) : (
+              <TbLayoutSidebarLeftExpandFilled className="w-10 h-10 text-brown" />
+            )}
           </button>
           <Drawer
             open={showSidebar}
@@ -268,5 +286,13 @@ export default function Room({ params }: { params: { room: string } }) {
       </div>
       <Footer />
     </>
+  )
+}
+
+export default function RoomWithOnboarding({ params }: { params: { room: string } }) {
+  return (
+    <OnboardingProvider>
+      <Room room={params.room} />
+    </OnboardingProvider>
   )
 }

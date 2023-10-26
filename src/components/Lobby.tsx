@@ -54,11 +54,11 @@ export default function Lobby({ room }: { room?: string }) {
   }
 
   const text = !room ? (
-    <>
+    <p>
       Since you are creating a new room, you will be the <strong>keeper</strong>.
-    </>
+    </p>
   ) : savedRoomData ? (
-    <>Welcome back to this room. You will be the keeper again and your clocks from last time will be restored.</>
+    <p>Welcome back to this room. You will be the keeper again and your clocks from last time will be restored.</p>
   ) : null
 
   let buttonText = 'Create room'
