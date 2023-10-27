@@ -74,6 +74,9 @@ export default function ClocksPanel({ room, socket, yOffset }: Props) {
   }
 
   function handleDelete(clockIndex) {
+    if (clockIndex === 0 && clocks.length === 1) {
+      setIsEditing(false)
+    }
     setClocks((prevState) => {
       const newState = [...prevState]
       newState.splice(clockIndex, 1)
