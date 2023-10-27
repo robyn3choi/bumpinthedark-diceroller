@@ -26,6 +26,7 @@ export default function DiceNumberSelect({ value, onChange }: Props) {
           <TbChevronLeft className="w-6 h-6" />
         </button>
         <input
+          disabled
           type="number"
           className="bg-[transparent] pt-2 pb-1 font-sans text-4xl appearance-none w-full xs:w-16 text-center border-y-2 border-x-0 border-orange"
           value={value}

@@ -36,6 +36,7 @@ export default function ClockSegmentNumberSelect({ value, onChange }: Props) {
         <TbChevronLeft className="w-4 h-4" />
       </button>
       <input
+        disabled
         type="number"
         className="px-0 w-10 h-10 bg-darkgrey text-lg appearance-none text-center border-y-2 border-x-0 border-orange"
         value={value}
