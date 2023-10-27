@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { Socket } from 'socket.io-client'
 import useLocalStorage from '@rehooks/local-storage'
@@ -19,6 +20,7 @@ export default function ClocksPanel({ room, socket, yOffset }: Props) {
   const [data, setData] = useLocalStorage<{ clocks: ClockData[] }>(getStorageKey(room))
   const [clocks, setClocks] = useState<ClockData[]>([])
   const [hasSetClocksFromStorage, setHasSetClocksFromStorage] = useState(false)
+  const [isEditing, setIsEditing] = useState<boolean>(false)
 
   useEffect(() => {
     socket.on('clocksUpdated', (_clocks) => {
@@ -102,9 +104,18 @@ export default function ClocksPanel({ room, socket, yOffset }: Props) {
   return (
     <div className="text-center h-screen pt-1 px-2 overflow-y-auto" style={{ height: `calc(100vh - ${yOffset}px)` }}>
       {isKeeper && (
-        <button className="btn-filled mt-4 mb-2" onClick={addClock}>
-          Add clock
-        </button>
+        <div className="mt-4 mb-2">
+          <button className="btn-filled" onClick={addClock}>
+            Add Clock
+          </button>
+          <button
+            disabled={clocks.length === 0}
+            className={clsx(isEditing ? 'btn-filled-yellow' : 'btn-filled-disableable', 'ml-2')}
+            onClick={() => setIsEditing((prevState) => !prevState)}
+          >
+            {isEditing ? 'Done' : 'Edit'}
+          </button>
+        </div>
       )}
       <div className="flex flex-col items-center gap-3 pt-3">
         {clocks.length ? (
@@ -121,6 +132,7 @@ export default function ClocksPanel({ room, socket, yOffset }: Props) {
               onMoveDown={() => handleMoveDown(i)}
               isFirst={i === 0}
               isLast={i === clocks.length - 1}
+              isEditing={isEditing}
             />
           ))
         ) : (

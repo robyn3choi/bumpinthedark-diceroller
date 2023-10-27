@@ -22,7 +22,7 @@ const config: Config = {
       grey: '#4e5059',
       lightgrey: '#61636e',
       beige: '#96837d',
-      red: '#c02315',
+      red: '#de3d2f',
     },
     extend: {
       screens: {

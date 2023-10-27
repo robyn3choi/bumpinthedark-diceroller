@@ -2,12 +2,14 @@ import { useRef, useState } from 'react'
 import ClockSegment from './ClockSegment'
 import { TbArrowDown, TbArrowUp, TbX } from 'react-icons/tb'
 import { useUser } from 'context/UserContext'
+import ClockSegmentNumberSelect from './ClockSegmentNumberSelect'
 
 const diameter = '130'
 
 type Props = {
   name: string
   segmentCount: number
+  isEditing: boolean
   isFirst?: boolean
   isLast?: boolean
   highestFilledSegmentIndex: number
@@ -21,6 +23,7 @@ type Props = {
 export default function Clock({
   name,
   segmentCount,
+  isEditing,
   isFirst,
   isLast,
   highestFilledSegmentIndex,
@@ -31,13 +34,10 @@ export default function Clock({
   onMoveDown,
 }: Props) {
   const { isKeeper } = useUser()
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingSegmentCount, setEditingSegmentCount] = useState(segmentCount)
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState<number | null>(null)
   // justClickedSegmentIndex is set when segment is clicked, is unset when mouse leaves segment
   // this is so that when you click a segment, it doesn't immediately go into preview mode
   const [justClickedSegmentIndex, setJustClickedSegmentIndex] = useState<number | null>(null)
-  const [isHovered, setIsHovered] = useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -57,31 +57,19 @@ export default function Clock({
           (hoveredSegmentIndex <= index && highestFilledSegmentIndex >= index)
   }
 
+  function handleSegmentMouseEnter(index) {
+    if (!isEditing) {
+      setHoveredSegmentIndex(index)
+    }
+  }
+
   function handleSegmentMouseLeave() {
     setJustClickedSegmentIndex(null)
     setHoveredSegmentIndex(null)
   }
 
-  function toggleEditing() {
-    if (isEditing) {
-      onEdit(inputRef.current?.value || '', editingSegmentCount)
-      setIsEditing(false)
-    } else {
-      setIsEditing(true)
-    }
-  }
-
-  function handleStopHover() {
-    onEdit(inputRef.current?.value || '', editingSegmentCount)
-    setIsHovered(false)
-  }
-
   return (
-    <div
-      className="relative text-orange flex flex-col items-center w-full py-2"
-      onMouseEnter={isKeeper ? () => setIsHovered(true) : undefined}
-      onMouseLeave={isKeeper ? handleStopHover : undefined}
-    >
+    <div className="relative text-orange flex flex-col items-center w-full py-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width={diameter}
@@ -98,24 +86,25 @@ export default function Clock({
             index={i}
             isFilled={i <= highestFilledSegmentIndex}
             isPreviewing={isPreviewingSegment(i)}
-            onMouseEnter={() => setHoveredSegmentIndex(i)}
+            onMouseEnter={() => handleSegmentMouseEnter(i)}
             onMouseLeave={handleSegmentMouseLeave}
             onClick={() => handleSegmentClick(i)}
           />
         ))}
       </svg>
+      <button className="absolute top-0 right-0 rounded-full p-1 hover:bg-grey"></button>
       <div className="font-serif text-yellow text-lg mt-2.5 w-full h-8">
-        {isHovered ? (
+        {isEditing ? (
           <input
-            ref={inputRef}
-            defaultValue={name}
+            value={name}
+            onChange={(e) => onEdit(e.target.value, segmentCount)}
             className="bg-[transparent] -mt-1.5 text-lg p-1 focus:border-yellow focus:ring-yellow rounded-lg border-yellow text-center w-full"
           />
         ) : (
           <div className="">{name}</div>
         )}
       </div>
-      {isHovered && (
+      {isEditing && (
         <>
           {!isFirst && (
             <button
@@ -136,10 +125,13 @@ export default function Clock({
           )}
           <button
             onClick={onDelete}
-            className="absolute rounded-full p-0.5 hover:bg-grey active:bg-orange -top-1 right-1"
+            className="absolute rounded-full p-0.5 hover:bg-grey active:bg-orange top-0 right-1"
           >
-            <TbX className="text-yellow w-7 h-7" />
+            <TbX className="text-red w-8 h-8" />
           </button>
+          <div className="absolute bottom-14 right-1">
+            <ClockSegmentNumberSelect value={segmentCount} onChange={(value) => onEdit(name, value)} />
+          </div>
         </>
       )}
     </div>

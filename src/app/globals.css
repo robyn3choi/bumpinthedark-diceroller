@@ -11,7 +11,11 @@ body {
 }
 
 .btn-filled {
-  @apply rounded-lg font-sans bg-orange pb-1 pt-2 px-4 text-4xl border-2 border-brown border-t-lightorange border-l-lightorange hover:brightness-[115%] active:bg-darkorange active:border-orange active:border-t-darkbrown active:border-l-darkbrown disabled:bg-darkorange disabled:border-orange disabled:border-t-darkbrown disabled:border-l-darkbrown disabled:brightness-100;
+  @apply rounded-lg font-sans bg-orange pb-1 pt-2 px-4 text-4xl border-2 border-brown border-t-lightorange border-l-lightorange hover:brightness-[115%] hover:active:brightness-100 active:bg-darkorange active:border-orange active:border-t-darkbrown active:border-l-darkbrown disabled:bg-darkorange disabled:border-orange disabled:border-t-darkbrown disabled:border-l-darkbrown disabled:brightness-100;
+}
+
+.btn-filled-yellow {
+  @apply text-darkbrown rounded-lg font-sans bg-lightorange pb-1 pt-2 px-4 text-4xl border-2 border-orange border-t-yellow border-l-yellow hover:brightness-[115%] hover:active:brightness-100 active:bg-lightorange active:border-yellow active:border-t-darkorange active:border-l-darkorange;
 }
 
 .btn-filled-disableable {
