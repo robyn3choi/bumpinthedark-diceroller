@@ -29,7 +29,7 @@ const jimNightShade = Jim_Nightshade({
 
 const title = 'Bump in the Dark | Dice Roller & Clock Tracker'
 const description =
-  'Roll dice and track clocks with this companion app for the tabletop roleplaying game, Bump in the Dark.'
+  'Roll dice and track clocks with this companion app for the tabletop roleplaying game Bump in the Dark.'
 
 export const metadata: Metadata = {
   title,
