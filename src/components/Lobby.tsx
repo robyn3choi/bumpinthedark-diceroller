@@ -55,7 +55,7 @@ export default function Lobby({ room }: { room?: string }) {
 
   const text = !room ? (
     <p>
-      Since you are creating a new room, you will be the <strong>keeper</strong>.
+      Since you are creating a new room, you will be the <span className="font-serifSc">keeper</span>.
     </p>
   ) : savedRoomData ? (
     <p>Welcome back to this room. You will be the keeper again and your clocks from last time will be restored.</p>
@@ -85,7 +85,7 @@ export default function Lobby({ room }: { room?: string }) {
         <input
           placeholder="Enter your name"
           onChange={(e) => setusername(e.target.value)}
-          className="my-3 focus:border-yellow focus:ring-yellow rounded-lg w-full sm:w-96 text-white text-5xl font-sans p-2 pb-1.5 pt-3 bg-[transparent] border-2 border-yellow text-center placeholder:text-yellow placeholder:opacity-60"
+          className="my-3 focus:border-yellow focus:ring-yellow rounded-lg w-full sm:w-96 text-white text-3xl p-2 py-3 bg-[transparent] border-2 border-yellow text-center placeholder:text-yellow placeholder:opacity-60"
         />
         {error && <div className="text-red text-lg">{error}</div>}
         <button disabled={!username || isLoading} className="w-full sm:w-96 btn-filled-disableable !text-5xl">

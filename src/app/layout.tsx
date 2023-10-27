@@ -1,7 +1,7 @@
 import './globals.css'
 import { UserProvider } from 'context/UserContext'
 import type { Metadata } from 'next'
-import { Spectral, Jim_Nightshade } from 'next/font/google'
+import { Spectral, Spectral_SC, Jim_Nightshade } from 'next/font/google'
 import localFont from 'next/font/local'
 
 const cryptCreep = localFont({
@@ -21,6 +21,7 @@ const cryptCreep = localFont({
 })
 
 const spectral = Spectral({ weight: ['400', '700'], subsets: ['latin'], variable: '--font-spectral' })
+const spectralSc = Spectral_SC({ weight: ['600'], subsets: ['latin'], variable: '--font-spectralSc' })
 const jimNightShade = Jim_Nightshade({
   weight: '400',
   subsets: ['latin'],
@@ -47,7 +48,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${spectral.variable} ${cryptCreep.variable} ${jimNightShade.variable}`}>
+    <html
+      lang="en"
+      className={`${spectral.variable} ${spectralSc.variable} ${cryptCreep.variable} ${jimNightShade.variable}`}
+    >
       <body>
         <UserProvider>{children}</UserProvider>
       </body>

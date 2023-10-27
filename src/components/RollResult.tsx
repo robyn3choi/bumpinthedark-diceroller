@@ -35,7 +35,7 @@ export default function RollResult({ rollData }: { rollData?: RollData }) {
           />
         ))}
       </div>
-      <div className="mt-6 text-xl">
+      <div className="mt-6 text-xl font-serifSc">
         <span className="line-through">{rollData.eliminatedRollResultType}</span>
         {'  '}
         <strong>{rollData.rollResultType + getRollResultTypePunctuation(rollData.rollResultType)}</strong>

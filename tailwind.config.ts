@@ -30,6 +30,7 @@ const config: Config = {
       },
       fontFamily: {
         serif: ['var(--font-spectral)'],
+        serifSc: ['var(--font-spectralSc)'],
         sans: ['var(--font-cryptCreep)'],
         handwriting: ['var(--font-jimNightshade)'],
       },
