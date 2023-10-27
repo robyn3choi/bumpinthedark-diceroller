@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  @apply relative h-fit pb-24 sm:pb-16 min-h-[100vh] font-serif text-white bg-gradient-to-b from-black to-darkishorange;
+  @apply relative h-fit pb-36 sm:pb-24 min-h-[100vh] font-serif text-white bg-gradient-to-b from-black to-darkishorange;
 }
 
 .btn-filled {
