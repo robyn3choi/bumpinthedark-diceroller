@@ -15,7 +15,7 @@ export default function Footer() {
       </p>
       <p className="mt-1.5">
         Created by{' '}
-        <a className="underline hover:text-white" href="https://github.com/robyn3choi" target="_blank" rel="noreferrer">
+        <a className="underline hover:text-white" href="https://linktr.ee/bitbirdy" target="_blank" rel="noreferrer">
           Robyn Choi
         </a>
         .
