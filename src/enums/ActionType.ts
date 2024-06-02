@@ -1,8 +1,8 @@
 enum ActionType {
-  Safe = 'Safe',
-  Risky = 'Risky',
-  Desperate = 'Desperate',
-  Hopeless = 'Hopeless',
+  Risky = 'Take a Risky Action',
+  Desperate = 'Go for Broke',
+  Safe = 'Play it Safe',
+  Hopeless = 'It’s Hopeless',
 }
 
 export default ActionType

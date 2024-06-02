@@ -157,11 +157,19 @@ function Room({ room }: { room: string }) {
             }
 
             let text = ''
+            let rollResults = copy.rollResults
 
-            const rollResults =
-              peerEdition === Edition.Original
-                ? { ...copy.rollResults, ...copy.originalActionRollResults }
-                : { ...copy.rollResults, ...copy.revisedActionRollResults }
+            if (rollType === RollType.Action) {
+              rollResults =
+                peerEdition === Edition.Original
+                  ? { ...copy.rollResults, ...copy.originalActionRollResults }
+                  : { ...copy.rollResults, ...copy.revisedActionRollResults }
+            } else if (rollType === RollType.Showdown) {
+              rollResults =
+                peerEdition === Edition.Original
+                  ? { ...copy.rollResults, ...copy.originalShowdownRollResults }
+                  : { ...copy.rollResults, ...copy.revisedShowdownRollResults }
+            }
 
             if (rollType === RollType.Action) {
               const actionRollSubType = peerEdition === Edition.Original ? position : actionType
@@ -226,6 +234,7 @@ function Room({ room }: { room: string }) {
   function switchEdition() {
     if (edition === Edition.Original) {
       setEdition(Edition.Revised)
+      setHasDisadvantage(false)
     } else {
       setEdition(Edition.Original)
     }
@@ -307,9 +316,9 @@ function Room({ room }: { room: string }) {
               />
               <DiceNumberSelect value={diceCount} onChange={setDiceCount} />
             </div>
-            {rollType === RollType.Action && edition === Edition.Revised ? (
+            {rollType === RollType.Action && edition === Edition.Revised && (
               <div className="mt-5">
-                <div className="grid grid-cols-2 gap-1.5 xs:flex">
+                <div className="grid xs:grid-cols-2 gap-1.5">
                   {Object.values(ActionType).map((at) => (
                     <button
                       key={at}
@@ -323,7 +332,8 @@ function Room({ room }: { room: string }) {
                 </div>
                 <div className="mt-5 font-bold text-xl text-center text-yellow">{copy.actionType[actionType!]}</div>
               </div>
-            ) : (
+            )}
+            {rollType == RollType.Action && edition === Edition.Original && (
               <div className="mt-4">
                 <div className="label">Position</div>
                 <div className="grid grid-cols-2 gap-1.5 xs:flex">
@@ -343,10 +353,12 @@ function Room({ room }: { room: string }) {
             )}
             {/* {position === Position.Hopeless && <div className="text-lg text-center">{copy.hopeless}</div>} */}
             <div className="text-center mt-8">
-              <label className="flex items-center justify-center gap-2.5 mb-3 cursor-pointer w-fit mx-auto">
-                <Checkbox isChecked={hasDisadvantage} onChange={(e) => setHasDisadvantage(e.target.checked)} />
-                <div className="text-4xl font-sans mt-1.5">Disadvantage</div>
-              </label>
+              {edition === Edition.Original && (
+                <label className="flex items-center justify-center gap-2.5 mb-3 cursor-pointer w-fit mx-auto">
+                  <Checkbox isChecked={hasDisadvantage} onChange={(e) => setHasDisadvantage(e.target.checked)} />
+                  <div className="text-4xl font-sans mt-1.5">Disadvantage</div>
+                </label>
+              )}
               <button
                 disabled={position === Position.Hopeless || actionType === ActionType.Hopeless}
                 onClick={roll}

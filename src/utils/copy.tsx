@@ -24,6 +24,84 @@ export const hopeless = (
   </>
 )
 
+export const rollResults = {
+  [RollType.Resistance]: {
+    [RollResultType.Critical]: 'Clear 1 luck.',
+    [RollResultType.StrongHit]: 'Mark 0 luck.',
+    [RollResultType.WeakHit]: 'Mark 2 luck.',
+    [RollResultType.Miss]: 'Mark 4 luck.',
+  },
+  [RollType.Fortune]: {
+    [RollResultType.Critical]: 'Critical!',
+    [RollResultType.StrongHit]: 'Strong hit!',
+    [RollResultType.WeakHit]: 'Weak Hit.',
+    [RollResultType.Miss]: 'Miss.',
+  },
+}
+
+export const originalActionRollResults = {
+  [RollType.Action]: {
+    [Position.Steady]: {
+      [RollResultType.Critical]: (
+        <>
+          You accomplish more than expected, and some aspect of the <strong>dark conspiracy</strong> is revealed to you.
+        </>
+      ),
+      [RollResultType.StrongHit]: <>You accomplish more than expected.</>,
+      [RollResultType.WeakHit]: (
+        <>
+          You accomplish more than expected, but there’s a <strong>minor consequence</strong>.
+        </>
+      ),
+      [RollResultType.Miss]: (
+        <>
+          You lose your advantage. Press on by seizing a <strong>risky</strong> opportunity, or withdraw and try a
+          different approach.
+        </>
+      ),
+    },
+    [Position.Risky]: {
+      [RollResultType.Critical]: (
+        <>
+          You succeed as if in a steady position. If you were searching for a clue, you may get a{' '}
+          <strong>void clue</strong>.
+        </>
+      ),
+      [RollResultType.StrongHit]: <>You do it.</>,
+      [RollResultType.WeakHit]: (
+        <>
+          You do it, but there’s one or more <strong>minor consequences</strong> or a <strong>major consequence</strong>
+          .
+        </>
+      ),
+      [RollResultType.Miss]: (
+        <>
+          Things go badly and there’s a <strong>major consequence</strong>.
+        </>
+      ),
+    },
+    [Position.Desperate]: {
+      [RollResultType.Critical]: (
+        <>
+          You succeed as if in a <strong>risky</strong> position. If you were searching for a clue, you may get a{' '}
+          <strong>void clue</strong>.
+        </>
+      ),
+      [RollResultType.StrongHit]: <>You do it, sort of. More remains to be done.</>,
+      [RollResultType.WeakHit]: (
+        <>
+          You do it, sort of - but there’s a <strong>major consequence</strong>.
+        </>
+      ),
+      [RollResultType.Miss]: (
+        <>
+          Things break bad. This is the worst result. There’s one or more <strong>major consequences</strong>.
+        </>
+      ),
+    },
+  },
+}
+
 export const revisedActionRollResults = {
   [RollType.Action]: {
     [ActionType.Safe]: {
@@ -98,82 +176,7 @@ export const revisedActionRollResults = {
   },
 }
 
-export const originalActionRollResults = {
-  [RollType.Action]: {
-    [Position.Steady]: {
-      [RollResultType.Critical]: (
-        <>
-          You accomplish more than expected, and some aspect of the <strong>dark conspiracy</strong> is revealed to you.
-        </>
-      ),
-      [RollResultType.StrongHit]: <>You accomplish more than expected.</>,
-      [RollResultType.WeakHit]: (
-        <>
-          You accomplish more than expected, but there’s a <strong>minor consequence</strong>.
-        </>
-      ),
-      [RollResultType.Miss]: (
-        <>
-          You lose your advantage. Press on by seizing a <strong>risky</strong> opportunity, or withdraw and try a
-          different approach.
-        </>
-      ),
-    },
-    [Position.Risky]: {
-      [RollResultType.Critical]: (
-        <>
-          You succeed as if in a steady position. If you were searching for a clue, you may get a{' '}
-          <strong>void clue</strong>.
-        </>
-      ),
-      [RollResultType.StrongHit]: <>You do it.</>,
-      [RollResultType.WeakHit]: (
-        <>
-          You do it, but there’s one or more <strong>minor consequences</strong> or a <strong>major consequence</strong>
-          .
-        </>
-      ),
-      [RollResultType.Miss]: (
-        <>
-          Things go badly and there’s a <strong>major consequence</strong>.
-        </>
-      ),
-    },
-    [Position.Desperate]: {
-      [RollResultType.Critical]: (
-        <>
-          You succeed as if in a <strong>risky</strong> position. If you were searching for a clue, you may get a{' '}
-          <strong>void clue</strong>.
-        </>
-      ),
-      [RollResultType.StrongHit]: <>You do it, sort of. More remains to be done.</>,
-      [RollResultType.WeakHit]: (
-        <>
-          You do it, sort of - but there’s a <strong>major consequence</strong>.
-        </>
-      ),
-      [RollResultType.Miss]: (
-        <>
-          Things break bad. This is the worst result. There’s one or more <strong>major consequences</strong>.
-        </>
-      ),
-    },
-  },
-}
-
-export const rollResults = {
-  [RollType.Resistance]: {
-    [RollResultType.Critical]: 'Clear 1 luck.',
-    [RollResultType.StrongHit]: 'Mark 0 luck.',
-    [RollResultType.WeakHit]: 'Mark 2 luck.',
-    [RollResultType.Miss]: 'Mark 4 luck.',
-  },
-  [RollType.Fortune]: {
-    [RollResultType.Critical]: 'Critical!',
-    [RollResultType.StrongHit]: 'Strong hit!',
-    [RollResultType.WeakHit]: 'Weak Hit.',
-    [RollResultType.Miss]: 'Miss.',
-  },
+export const originalShowdownRollResults = {
   [RollType.Showdown]: {
     [RollResultType.Critical]: (
       <>
@@ -210,6 +213,29 @@ export const rollResults = {
           When we cut to the action, you start in a <strong>hopeless</strong> position and something has already gone
           wrong.
         </em>
+      </>
+    ),
+  },
+}
+
+export const revisedShowdownRollResults = {
+  [RollType.Showdown]: {
+    [RollResultType.Critical]: (
+      <>
+        You were correct. The situation is either less dangerous than expected, or you’ve found something specific that
+        greatly mitigates the threat or ties it directly to the <strong>conspiracy</strong>.{' '}
+      </>
+    ),
+    [RollResultType.StrongHit]: (
+      <>Your theory is correct and your approach is sound. You are able to act on the exact answers you deducted.</>
+    ),
+    [RollResultType.WeakHit]: (
+      <>Your have a decent theory or plan of approach but have drawn some incorrect or incomplete conclusions.</>
+    ),
+    [RollResultType.Miss]: (
+      <>
+        Your theory is full of holes and your approach isn’t well-considered.
+        <em>When we cut to the action, something has already gone very wrong.</em>
       </>
     ),
   },
