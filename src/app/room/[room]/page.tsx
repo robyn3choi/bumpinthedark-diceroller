@@ -187,6 +187,7 @@ function Room({ room }: { room: string }) {
 
             setRollData({
               rollType,
+              edition: peerEdition,
               position,
               actionType,
               hasDisadvantage,
@@ -234,9 +235,11 @@ function Room({ room }: { room: string }) {
   function switchEdition() {
     if (edition === Edition.Original) {
       setEdition(Edition.Revised)
+      setPosition(Position.Risky)
       setHasDisadvantage(false)
     } else {
       setEdition(Edition.Original)
+      setActionType(ActionType.Risky)
     }
   }
 
