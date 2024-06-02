@@ -1,3 +1,4 @@
+import ActionType from 'enums/ActionType'
 import Position from 'enums/Position'
 import RollResultType from 'enums/RollResultType'
 import RollType from 'enums/RollType'
@@ -6,6 +7,7 @@ export default interface RollData {
   username: string
   rollType: RollType
   position: Position
+  actionType: ActionType
   dice: number[]
   diceCount: number
   resultDieIndex: number

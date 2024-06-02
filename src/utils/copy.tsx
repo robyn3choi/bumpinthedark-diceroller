@@ -1,3 +1,4 @@
+import ActionType from 'enums/ActionType'
 import Position from 'enums/Position'
 import RollResultType from 'enums/RollResultType'
 import RollType from 'enums/RollType'
@@ -9,6 +10,13 @@ export const position = {
   [Position.Hopeless]: 'You’re fucked.',
 }
 
+export const actionType = {
+  [ActionType.Risky]: 'You take a dangerous chance.',
+  [ActionType.Desperate]: 'You increase exposure for a benefit.',
+  [ActionType.Safe]: 'You limit your exposure at a cost.',
+  [ActionType.Hopeless]: 'You’re fucked.',
+}
+
 export const hopeless = (
   <>
     You’re going to have to change your approach, or the keeper will take actions which you must <strong>resist</strong>{' '}
@@ -16,19 +24,81 @@ export const hopeless = (
   </>
 )
 
-export const rollResults = {
-  [RollType.Resistance]: {
-    [RollResultType.Critical]: 'Clear 1 luck.',
-    [RollResultType.StrongHit]: 'Mark 0 luck.',
-    [RollResultType.WeakHit]: 'Mark 2 luck.',
-    [RollResultType.Miss]: 'Mark 4 luck.',
+export const revisedActionRollResults = {
+  [RollType.Action]: {
+    [ActionType.Safe]: {
+      [RollResultType.Critical]: (
+        <>
+          You succeed with <strong>standard impact</strong>. If you were searching for a clue, you may find a{' '}
+          <strong>void clue</strong>.
+        </>
+      ),
+      [RollResultType.StrongHit]: (
+        <>
+          You do it with <strong>reduced impact</strong>.
+        </>
+      ),
+      [RollResultType.WeakHit]: (
+        <>
+          You do it with <strong>reduced impact</strong> and a <strong>reduced consequence</strong>.
+        </>
+      ),
+      [RollResultType.Miss]: (
+        <>
+          You’re exposed. Press on by <strong>taking a risky action</strong> or withdraw and try a different approach.
+        </>
+      ),
+    },
+    [ActionType.Risky]: {
+      [RollResultType.Critical]: (
+        <>
+          You succeed with <strong>increased impact</strong>. If you were searching for a clue, you may find a{' '}
+          <strong>void clue</strong>.
+        </>
+      ),
+      [RollResultType.StrongHit]: (
+        <>
+          You do it. <em>Describe how</em>.
+        </>
+      ),
+      [RollResultType.WeakHit]: (
+        <>
+          You do it, but there is a <strong>standard consequence</strong>.
+        </>
+      ),
+      [RollResultType.Miss]: (
+        <>
+          Things go badly and there are one or more <strong>standard consequences</strong>.
+        </>
+      ),
+    },
+    [ActionType.Desperate]: {
+      [RollResultType.Critical]: (
+        <>
+          You succeed with <strong>increased impact</strong>, and some aspect of the <strong>dark conspiracy</strong> is
+          revealed to you.
+        </>
+      ),
+      [RollResultType.StrongHit]: (
+        <>
+          You do it with <strong>increased impact</strong>.
+        </>
+      ),
+      [RollResultType.WeakHit]: (
+        <>
+          You do it with <strong>increased impact</strong> but there is a <strong>worse consequence</strong>.
+        </>
+      ),
+      [RollResultType.Miss]: (
+        <>
+          Things break bad and there are one or more <strong>worse consequences</strong>.
+        </>
+      ),
+    },
   },
-  [RollType.Fortune]: {
-    [RollResultType.Critical]: 'Critical!',
-    [RollResultType.StrongHit]: 'Strong hit!',
-    [RollResultType.WeakHit]: 'Weak Hit.',
-    [RollResultType.Miss]: 'Miss.',
-  },
+}
+
+export const originalActionRollResults = {
   [RollType.Action]: {
     [Position.Steady]: {
       [RollResultType.Critical]: (
@@ -88,6 +158,21 @@ export const rollResults = {
         </>
       ),
     },
+  },
+}
+
+export const rollResults = {
+  [RollType.Resistance]: {
+    [RollResultType.Critical]: 'Clear 1 luck.',
+    [RollResultType.StrongHit]: 'Mark 0 luck.',
+    [RollResultType.WeakHit]: 'Mark 2 luck.',
+    [RollResultType.Miss]: 'Mark 4 luck.',
+  },
+  [RollType.Fortune]: {
+    [RollResultType.Critical]: 'Critical!',
+    [RollResultType.StrongHit]: 'Strong hit!',
+    [RollResultType.WeakHit]: 'Weak Hit.',
+    [RollResultType.Miss]: 'Miss.',
   },
   [RollType.Showdown]: {
     [RollResultType.Critical]: (

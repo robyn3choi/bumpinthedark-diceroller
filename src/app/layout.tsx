@@ -1,8 +1,10 @@
 import './globals.css'
+import toast, { Toaster } from 'react-hot-toast'
 import { UserProvider } from 'context/UserContext'
 import type { Metadata } from 'next'
 import { Spectral, Spectral_SC, Jim_Nightshade } from 'next/font/google'
 import localFont from 'next/font/local'
+import Toast from 'components/Toast'
 
 const cryptCreep = localFont({
   src: [
@@ -53,7 +55,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${spectral.variable} ${spectralSc.variable} ${cryptCreep.variable} ${jimNightShade.variable}`}
     >
       <body>
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          {children}
+          <Toast />
+        </UserProvider>
       </body>
     </html>
   )

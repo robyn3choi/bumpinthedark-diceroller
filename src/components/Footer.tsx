@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="text-yellow p-4 pr-[5rem] sm:pr-4 absolute bottom-1 sm:text-center w-full">
+    <div className="text-yellow p-4 pr-[5rem] sm:pr-4 absolute bottom-1 sm:text-center w-full text-sm sm:text-base">
       <p>
         This is an online dice roller and clock tracker for{' '}
         <a
