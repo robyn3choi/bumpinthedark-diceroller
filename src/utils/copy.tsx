@@ -154,7 +154,7 @@ export const revisedActionRollResults = {
       [RollResultType.Critical]: (
         <>
           You succeed with <strong>increased impact</strong>, and some aspect of the <strong>dark conspiracy</strong> is
-          revealed to you.
+          revealed to you. Mark <strong>hope</strong>.
         </>
       ),
       [RollResultType.StrongHit]: (
